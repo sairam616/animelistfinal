@@ -13,7 +13,11 @@ class HomeViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-
+    @IBOutlet weak var myImageView: UIImageView!
+    
+    @IBOutlet weak var myLabel: UILabel!
+    
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 

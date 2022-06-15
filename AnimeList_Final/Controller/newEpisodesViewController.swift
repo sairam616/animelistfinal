@@ -7,39 +7,112 @@
 
 import UIKit
 
-class newEpisodesViewController: UITableViewController {
+class myCustomTableViewCell_new : UITableViewCell
+{
+    @IBOutlet weak var myCustomLabel: UILabel!
+    @IBOutlet weak var myCustomImage: UIImageView!
+}
+
+
+class newEpisodesViewController: UIViewController,UITableViewDelegate, UITableViewDataSource{
+    
+    var listItems1 : animeListItems1?
+    lazy var listType : Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.delegate = self
+        tableView.dataSource = self
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 
     // MARK: - Table view data source
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
+      func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if(listType == 0)
+        {
+            return  (listItems1?.today.items.all.count)!;
+        }
+        else if(listType == 1)
+        {
+            return  (listItems1?.yesterday.items.all.count)!;
+        }
+        else{
+            //return  (listItems1?.2days.items.all.count)!;
+            return 1
+        }
     }
 
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let cell:myCustomTableViewCell_new = tableView.dequeueReusableCell(withIdentifier: "CustomCell", for: indexPath) as! myCustomTableViewCell_new
+        if(listType == 0)
+        {
+            let item = listItems1?.today.items.all[indexPath.row]
+            cell.myCustomLabel.text = item?.title
+            apiController.shared.getPoster(url: item!.poster)
+            {
+                Result in
+                switch Result
+                {
+                    case .success(let img):
+                        DispatchQueue.main.async
+                        {
+                            cell.myCustomImage.image = img
+                        }
+                    case .failure(let error):
+                        print(error)
+                
+                }
+            }
+        }
+        else if(listType == 1)
+        {
+            let item = listItems1?.yesterday.items.all[indexPath.row]
+            cell.myCustomLabel.text = item?.title
+            apiController.shared.getPoster(url: item!.poster)
+            {
+                Result in
+                switch Result
+                {
+                    case .success(let img):
+                        DispatchQueue.main.async
+                        {
+                            cell.myCustomImage.image = img
+                        }
+                    case .failure(let error):
+                        print(error)
+                
+                }
+            }
+        }
+        else
+        {
+//            let item = llistItems1?.2days.items.all[indexPath.row]
+//            cell.myCustomLabel.text = item.title
+//            apiController.shared.getPoster(url: item!.poster)
+//            {
+//                Result in
+//                switch Result
+//                {
+//                    case .success(let img):
+//                        DispatchQueue.main.async
+//                        {
+//                            cell.myCustomImage.image = img
+//                        }
+//                    case .failure(let error):
+//                        print(error)
+//
+//                }
+//            }
+        }
         return cell
     }
-    */
 
     /*
     // Override to support conditional editing of the table view.
